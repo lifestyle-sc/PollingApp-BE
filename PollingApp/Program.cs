@@ -1,5 +1,5 @@
 using NLog;
-
+using PollingApp.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +8,7 @@ LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nl
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.ConfigureLoggerService();
 
 var app = builder.Build();
 

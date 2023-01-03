@@ -11,7 +11,7 @@ namespace Entities.Models
         [Required(ErrorMessage = "Deadline is a required field")]
         public DateTime Deadline { get; set; }
 
-        public bool IsDisabled { get; set; } = false;
+        public bool IsDisabled => Deadline == DateTime.Now;
 
         [ForeignKey(nameof(User))]
         public Guid UserId { get; set; }

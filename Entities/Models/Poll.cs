@@ -14,7 +14,7 @@ namespace Entities.Models
         public bool IsDisabled => Deadline == DateTime.Now;
 
         [ForeignKey(nameof(User))]
-        public Guid UserId { get; set; }
+        public string? UserId { get; set; }
         public User? User { get; set; }
         public ICollection<Candidate>? Candidates { get; set; }
     }

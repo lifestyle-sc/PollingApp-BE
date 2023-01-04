@@ -11,12 +11,16 @@ builder.Services.ConfigureCors();
 builder.Services.ConfigureIISIntegration();
 builder.Services.AddControllers();
 builder.Services.ConfigureLoggerService();
+builder.Services.AddAuthentication();
+builder.Services.ConfigureIdentity();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

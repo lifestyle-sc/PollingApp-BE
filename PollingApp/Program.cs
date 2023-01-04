@@ -9,8 +9,9 @@ LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nl
 
 builder.Services.ConfigureCors();
 builder.Services.ConfigureIISIntegration();
-builder.Services.AddControllers();
 builder.Services.ConfigureLoggerService();
+builder.Services.ConfigureRepository();
+builder.Services.AddControllers();
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
 

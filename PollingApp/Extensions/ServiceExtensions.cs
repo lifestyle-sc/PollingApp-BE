@@ -2,6 +2,7 @@
 using Entities.Models;
 using LoggerService;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Repository;
 using Service;
 using Service.Contracts;
@@ -20,6 +21,10 @@ namespace PollingApp.Extensions
                     .AllowAnyHeader();
                 });
             });
+
+        public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration) =>
+            services.AddDbContext<RepositoryContext>(opts => 
+            opts.UseSqlServer(configuration.GetConnectionString("sqlConnection")));
 
         public static void ConfigureIISIntegration(this IServiceCollection services) =>
             services.Configure<IISOptions>(options => { });

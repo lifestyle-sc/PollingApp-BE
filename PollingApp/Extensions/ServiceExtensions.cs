@@ -3,6 +3,8 @@ using Entities.Models;
 using LoggerService;
 using Microsoft.AspNetCore.Identity;
 using Repository;
+using Service;
+using Service.Contracts;
 
 namespace PollingApp.Extensions
 {
@@ -26,6 +28,9 @@ namespace PollingApp.Extensions
 
         public static void ConfigureRepository(this IServiceCollection services) =>
             services.AddScoped<IRepositoryManager, RepositoryManager>();
+
+        public static void ConfigureServiceManager(this IServiceCollection services) =>
+            services.AddScoped<IServiceManager, ServiceManager>();
 
         public static void ConfigureIdentity(this IServiceCollection services)
         {

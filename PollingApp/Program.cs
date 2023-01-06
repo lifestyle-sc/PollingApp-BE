@@ -1,3 +1,5 @@
+using Contracts;
+using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
 using PollingApp.Extensions;
 
@@ -18,9 +20,23 @@ builder.Services.ConfigureIdentity();
 
 var app = builder.Build();
 
+var logger = app.Services.GetRequiredService<ILoggerManager>();
+
 // Configure the HTTP request pipeline.
 
+app.ConfigureExceptionHandler(logger);
+
+if (app.Environment.IsProduction())
+    app.UseHsts();
+
 app.UseHttpsRedirection();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.All
+});
+
+app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
 

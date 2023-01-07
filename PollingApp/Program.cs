@@ -15,6 +15,7 @@ builder.Services.ConfigureLoggerService();
 builder.Services.ConfigureRepository();
 builder.Services.ConfigureServiceManager();
 builder.Services.AddControllers();
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
 

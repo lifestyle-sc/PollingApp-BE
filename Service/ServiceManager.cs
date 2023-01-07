@@ -1,4 +1,5 @@
-﻿using Contracts;
+﻿using AutoMapper;
+using Contracts;
 using Service.Contracts;
 
 namespace Service
@@ -8,10 +9,10 @@ namespace Service
         private readonly Lazy<IPollService> _pollService;
         private readonly Lazy<ICandidateService> _candidateService;
 
-        public ServiceManager(IRepositoryManager repository, ILoggerManager logger)
+        public ServiceManager(IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
         {
-            _pollService = new Lazy<IPollService>(() => new PollService(repository, logger));
-            _candidateService = new Lazy<ICandidateService>(() => new CandidateService(repository, logger));
+            _pollService = new Lazy<IPollService>(() => new PollService(repository, logger, mapper));
+            _candidateService = new Lazy<ICandidateService>(() => new CandidateService(repository, logger, mapper));
         }
 
         public IPollService PollService => _pollService.Value;

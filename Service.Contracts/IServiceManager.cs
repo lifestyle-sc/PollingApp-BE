@@ -5,5 +5,7 @@
         IPollService PollService { get; }
 
         ICandidateService CandidateService { get; }
+
+        IAuthenticationService AuthenticationService { get; }
     }
 }

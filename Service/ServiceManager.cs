@@ -13,11 +13,11 @@ namespace Service
         private readonly Lazy<ICandidateService> _candidateService;
         private readonly Lazy<IAuthenticationService> _authenticationService;
 
-        public ServiceManager(IRepositoryManager repository, ILoggerManager logger, IMapper mapper, UserManager<User> userManager, IConfiguration configuration)
+        public ServiceManager(IRepositoryManager repository, ILoggerManager logger, IMapper mapper, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
         {
             _pollService = new Lazy<IPollService>(() => new PollService(repository, logger, mapper));
             _candidateService = new Lazy<ICandidateService>(() => new CandidateService(repository, logger, mapper));
-            _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(logger, mapper, userManager, configuration));
+            _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(logger, mapper, userManager, roleManager, configuration));
         }
 
         public IPollService PollService => _pollService.Value;

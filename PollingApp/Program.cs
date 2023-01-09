@@ -11,12 +11,13 @@ LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nl
 
 builder.Services.ConfigureCors();
 builder.Services.ConfigureIISIntegration();
+builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.ConfigureLoggerService();
-builder.Services.ConfigureRepository();
+builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllers()
     .AddApplicationPart(typeof(PollingApp.Presentation.AssemblyReference).Assembly);
-builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
 

@@ -9,6 +9,10 @@ namespace PollingApp
         public MappingProfile()
         {
             CreateMap<UserForRegistrationDto, User>();
+
+            CreateMap<PollForCreationDto, Poll>();
+
+            CreateMap<Poll, PollDto>();
         }
     }
 }

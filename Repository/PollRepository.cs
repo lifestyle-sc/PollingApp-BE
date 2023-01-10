@@ -9,5 +9,11 @@ namespace Repository
         {
 
         }
+
+        public void CreatePoll(Guid userId, Poll poll)
+        {
+            poll.UserId = userId.ToString();
+            Create(poll);
+        }
     }
 }

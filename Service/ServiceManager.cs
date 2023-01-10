@@ -15,7 +15,7 @@ namespace Service
 
         public ServiceManager(IRepositoryManager repository, ILoggerManager logger, IMapper mapper, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
         {
-            _pollService = new Lazy<IPollService>(() => new PollService(repository, logger, mapper));
+            _pollService = new Lazy<IPollService>(() => new PollService(repository, logger, mapper, userManager));
             _candidateService = new Lazy<ICandidateService>(() => new CandidateService(repository, logger, mapper));
             _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(logger, mapper, userManager, roleManager, configuration));
         }

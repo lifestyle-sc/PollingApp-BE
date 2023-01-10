@@ -4,6 +4,6 @@ namespace Contracts
 {
     public interface IPollRepository
     {
-        void CreatePoll(Guid userId, Poll poll);
+        void CreatePollForUser(Guid userId, Poll poll);
     }
 }

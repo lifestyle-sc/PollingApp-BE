@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Contracts;
+using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Service.Contracts;
+using Shared.DTOs;
 
 namespace Service
 {
@@ -21,6 +23,18 @@ namespace Service
             _configuration = configuration;
             _userManager = userManager;
             _roleManager = roleManager;
+        }
+
+        public async Task<UserDto> GetUserAsync(Guid id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+
+            if (user == null)
+                throw new UserNotFoundException(id);
+
+            var userToReturn = _mapper.Map<UserDto>(user);
+
+            return userToReturn;
         }
     }
 }

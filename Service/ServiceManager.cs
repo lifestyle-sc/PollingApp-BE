@@ -12,12 +12,14 @@ namespace Service
         private readonly Lazy<IPollService> _pollService;
         private readonly Lazy<ICandidateService> _candidateService;
         private readonly Lazy<IAuthenticationService> _authenticationService;
+        private readonly Lazy<IUserService> _userService;
 
-        public ServiceManager(IRepositoryManager repository, ILoggerManager logger, IMapper mapper, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+        public ServiceManager(IRepositoryManager repository, ILoggerManager logger, IMapper mapper, IConfiguration configuration, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             _pollService = new Lazy<IPollService>(() => new PollService(repository, logger, mapper, userManager));
             _candidateService = new Lazy<ICandidateService>(() => new CandidateService(repository, logger, mapper));
-            _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(logger, mapper, userManager, roleManager, configuration));
+            _authenticationService = new Lazy<IAuthenticationService>(() => new AuthenticationService(logger, mapper, configuration, userManager, roleManager));
+            _userService = new Lazy<IUserService>(() => new UserService(logger, mapper, configuration, userManager, roleManager));
         }
 
         public IPollService PollService => _pollService.Value;
@@ -25,5 +27,7 @@ namespace Service
         public ICandidateService CandidateService => _candidateService.Value;
 
         public IAuthenticationService AuthenticationService => _authenticationService.Value;
+
+        public IUserService UserService => _userService.Value;
     }
 }

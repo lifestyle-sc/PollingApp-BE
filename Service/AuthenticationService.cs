@@ -13,17 +13,17 @@ namespace Service
     {
         private readonly IMapper _mapper;
         private readonly ILoggerManager _logger;
+        private readonly IConfiguration _configuration;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IConfiguration _configuration;
 
-        public AuthenticationService(ILoggerManager logger, IMapper mapper, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+        public AuthenticationService(ILoggerManager logger, IMapper mapper, IConfiguration configuration, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             _mapper = mapper;
             _logger = logger;
+            _configuration = configuration;
             _userManager = userManager;
             _roleManager = roleManager;
-            _configuration = configuration;
         }
 
         public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForReg)

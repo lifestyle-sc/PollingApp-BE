@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
@@ -16,6 +17,23 @@ namespace Repository
             poll.CreatedAt = DateTime.Now;
             poll.UpdatedAt = DateTime.Now;
             Create(poll);
+        }
+
+        public async Task<IEnumerable<Poll>> GetPollsForUserAsync(Guid userId, bool trackChanges)
+        {
+            var polls = await FindByCondition(p => p.UserId == userId.ToString(), trackChanges)
+                .OrderBy(p => p.Name)
+                .ToListAsync();
+
+            return polls;
+        }
+
+        public async Task<Poll> GetPollForUserAsync(Guid userId, Guid id, bool trackChanges)
+        {
+            var poll = await FindByCondition(p => p.UserId == userId.ToString() && p.Id == id, trackChanges)
+                .SingleOrDefaultAsync();
+
+            return poll;
         }
     }
 }

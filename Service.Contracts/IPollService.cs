@@ -4,6 +4,10 @@ namespace Service.Contracts
 {
     public interface IPollService
     {
-        Task<PollDto> CreatePollForUser(Guid userId, PollForCreationDto pollForCreation);
+        Task<PollDto> CreatePollForUserAsync(Guid userId, PollForCreationDto pollForCreation);
+
+        Task<IEnumerable<PollDto>> GetPollsForUserAsync(Guid userId, bool trackChanges);
+
+        Task<PollDto> GetPollForUserAsync(Guid userId, Guid id, bool trackChanges);
     }
 }

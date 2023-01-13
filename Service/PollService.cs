@@ -23,18 +23,52 @@ namespace Service
             _userManager = userManager;
         }
 
-        public async Task<PollDto> CreatePollForUser(Guid userId, PollForCreationDto pollForCreation)
+        public async Task<PollDto> CreatePollForUserAsync(Guid userId, PollForCreationDto pollForCreation)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
 
             if(user == null)
                 throw new UserNotFoundException(userId);
 
+            if (pollForCreation.Deadline <= DateTime.Now)
+                throw new DeadlineParameterBadRequestException(pollForCreation.Deadline);
+
             var poll = _mapper.Map<Poll>(pollForCreation);
 
             _repository.Poll.CreatePollForUser(userId, poll);
 
             await _repository.SaveAsync();
+
+            var pollToReturn = _mapper.Map<PollDto>(poll);
+
+            return pollToReturn;
+        }
+
+        public async Task<IEnumerable<PollDto>> GetPollsForUserAsync(Guid userId, bool trackChanges)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+            if (user == null)
+                throw new UserNotFoundException(userId);
+
+            var polls = await _repository.Poll.GetPollsForUserAsync(userId, trackChanges);
+
+            var pollsToReturn = _mapper.Map<IEnumerable<PollDto>>(polls);
+
+            return pollsToReturn;
+        }
+
+        public async Task<PollDto> GetPollForUserAsync(Guid userId, Guid id, bool trackChanges)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+            if (user == null)
+                throw new UserNotFoundException(userId);
+
+            var poll = await _repository.Poll.GetPollForUserAsync(userId, id, trackChanges);
+
+            if (poll == null)
+                throw new PollNotFoundException(id);
 
             var pollToReturn = _mapper.Map<PollDto>(poll);
 

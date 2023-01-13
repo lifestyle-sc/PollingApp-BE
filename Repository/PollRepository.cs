@@ -28,7 +28,7 @@ namespace Repository
             return polls;
         }
 
-        public async Task<Poll> GetPollForUser(Guid userId, Guid id, bool trackChanges)
+        public async Task<Poll> GetPollForUserAsync(Guid userId, Guid id, bool trackChanges)
         {
             var poll = await FindByCondition(p => p.UserId == userId.ToString() && p.Id == id, trackChanges)
                 .SingleOrDefaultAsync();

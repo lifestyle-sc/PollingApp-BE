@@ -57,5 +57,22 @@ namespace Service
 
             return pollsToReturn;
         }
+
+        public async Task<PollDto> GetPollForUserAsync(Guid userId, Guid id, bool trackChanges)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+            if (user == null)
+                throw new UserNotFoundException(userId);
+
+            var poll = await _repository.Poll.GetPollForUserAsync(userId, id, trackChanges);
+
+            if (poll == null)
+                throw new PollNotFoundException(id);
+
+            var pollToReturn = _mapper.Map<PollDto>(poll);
+
+            return pollToReturn;
+        }
     }
 }

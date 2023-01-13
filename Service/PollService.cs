@@ -23,7 +23,7 @@ namespace Service
             _userManager = userManager;
         }
 
-        public async Task<PollDto> CreatePollForUser(Guid userId, PollForCreationDto pollForCreation)
+        public async Task<PollDto> CreatePollForUserAsync(Guid userId, PollForCreationDto pollForCreation)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
 
@@ -42,6 +42,20 @@ namespace Service
             var pollToReturn = _mapper.Map<PollDto>(poll);
 
             return pollToReturn;
+        }
+
+        public async Task<IEnumerable<PollDto>> GetPollsForUserAsync(Guid userId, bool trackChanges)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+            if (user == null)
+                throw new UserNotFoundException(userId);
+
+            var polls = await _repository.Poll.GetPollsForUser(userId, trackChanges);
+
+            var pollsToReturn = _mapper.Map<IEnumerable<PollDto>>(polls);
+
+            return pollsToReturn;
         }
     }
 }

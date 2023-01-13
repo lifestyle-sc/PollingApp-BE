@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Entities.Models;
+using Shared.DTOs;
 
 namespace PollingApp
 {
@@ -6,7 +8,13 @@ namespace PollingApp
     {
         public MappingProfile()
         {
+            CreateMap<UserForRegistrationDto, User>();
 
+            CreateMap<User, UserDto>();
+
+            CreateMap<PollForCreationDto, Poll>();
+
+            CreateMap<Poll, PollDto>();
         }
     }
 }

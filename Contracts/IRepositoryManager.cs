@@ -6,6 +6,6 @@
 
         IPollRepository Poll { get; }
 
-        void Save();
+        Task SaveAsync();
     }
 }

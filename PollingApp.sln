@@ -13,9 +13,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entiti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{BE085117-2225-43FE-B417-C605B15466AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Contracts", "Service.Contracts\Service.Contracts.csproj", "{A997D961-1ACC-4429-B6D3-425B5459E966}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service.Contracts", "Service.Contracts\Service.Contracts.csproj", "{A997D961-1ACC-4429-B6D3-425B5459E966}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{57C18201-4842-4655-B8C9-E8ADCE1C6766}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{57C18201-4842-4655-B8C9-E8ADCE1C6766}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PollingApp.Presentation", "PollingApp.Presentation\PollingApp.Presentation.csproj", "{6AD3007F-E646-4DB3-81B4-CBBB24553CE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{8F5629AA-7BF7-40FE-A148-171B61C136B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,14 @@ Global
 		{57C18201-4842-4655-B8C9-E8ADCE1C6766}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57C18201-4842-4655-B8C9-E8ADCE1C6766}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57C18201-4842-4655-B8C9-E8ADCE1C6766}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AD3007F-E646-4DB3-81B4-CBBB24553CE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AD3007F-E646-4DB3-81B4-CBBB24553CE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AD3007F-E646-4DB3-81B4-CBBB24553CE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AD3007F-E646-4DB3-81B4-CBBB24553CE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F5629AA-7BF7-40FE-A148-171B61C136B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F5629AA-7BF7-40FE-A148-171B61C136B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F5629AA-7BF7-40FE-A148-171B61C136B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F5629AA-7BF7-40FE-A148-171B61C136B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

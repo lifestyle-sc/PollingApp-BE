@@ -30,6 +30,9 @@ namespace Service
             if(user == null)
                 throw new UserNotFoundException(userId);
 
+            if (pollForCreation.Deadline <= DateTime.Now)
+                throw new DeadlineParameterBadRequestException(pollForCreation.Deadline);
+
             var poll = _mapper.Map<Poll>(pollForCreation);
 
             _repository.Poll.CreatePollForUser(userId, poll);

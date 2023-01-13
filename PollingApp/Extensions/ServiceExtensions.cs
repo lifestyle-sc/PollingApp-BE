@@ -3,6 +3,7 @@ using Entities.Models;
 using LoggerService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PollingApp.Formatter;
 using Repository;
 using Service;
 using Service.Contracts;
@@ -36,6 +37,12 @@ namespace PollingApp.Extensions
 
         public static void ConfigureServiceManager(this IServiceCollection services) =>
             services.AddScoped<IServiceManager, ServiceManager>();
+
+        public static IMvcBuilder AddCustomCsvFormatter(this IMvcBuilder builder) =>
+            builder.AddMvcOptions(config =>
+            {
+                config.OutputFormatters.Add(new UserCsvOutputFormatter());
+            });
 
         public static void ConfigureIdentity(this IServiceCollection services)
         {

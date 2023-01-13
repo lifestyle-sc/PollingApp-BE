@@ -51,7 +51,7 @@ namespace Service
             if (user == null)
                 throw new UserNotFoundException(userId);
 
-            var polls = await _repository.Poll.GetPollsForUser(userId, trackChanges);
+            var polls = await _repository.Poll.GetPollsForUserAsync(userId, trackChanges);
 
             var pollsToReturn = _mapper.Map<IEnumerable<PollDto>>(polls);
 

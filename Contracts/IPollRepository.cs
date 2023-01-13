@@ -6,6 +6,8 @@ namespace Contracts
     {
         void CreatePollForUser(Guid userId, Poll poll);
 
-        Task<IEnumerable<Poll>> GetPollsForUser(Guid userId, bool trackChanges);
+        Task<IEnumerable<Poll>> GetPollsForUserAsync(Guid userId, bool trackChanges);
+
+        Task<Poll> GetPollForUser(Guid userId, Guid id, bool trackChanges);
     }
 }

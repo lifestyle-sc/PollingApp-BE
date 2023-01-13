@@ -19,13 +19,21 @@ namespace Repository
             Create(poll);
         }
 
-        public async Task<IEnumerable<Poll>> GetPollsForUser(Guid userId, bool trackChanges)
+        public async Task<IEnumerable<Poll>> GetPollsForUserAsync(Guid userId, bool trackChanges)
         {
             var polls = await FindByCondition(p => p.UserId == userId.ToString(), trackChanges)
                 .OrderBy(p => p.Name)
                 .ToListAsync();
 
             return polls;
+        }
+
+        public async Task<Poll> GetPollForUser(Guid userId, Guid id, bool trackChanges)
+        {
+            var poll = await FindByCondition(p => p.UserId == userId.ToString() && p.Id == id, trackChanges)
+                .SingleOrDefaultAsync();
+
+            return poll;
         }
     }
 }

@@ -9,5 +9,13 @@ namespace Repository
         {
 
         }
+
+        public void CreateCandidateForPoll(Guid pollId, Candidate candidate)
+        {
+            candidate.PollId = pollId;
+            candidate.CreatedAt = DateTime.Now;
+            candidate.UpdatedAt = DateTime.Now;
+            Create(candidate);
+        }
     }
 }

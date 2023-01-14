@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.Exceptions;
+using Entities.Models;
 using Service.Contracts;
 using Shared.DTOs;
 
@@ -25,6 +26,14 @@ namespace Service
 
             if (poll == null)
                 throw new PollNotFoundException(pollId);
+
+            var candidate = _mapper.Map<Candidate>(candidateForCreation);
+
+            _repository.Candidate.CreateCandidateForPoll(pollId, candidate);
+
+            var candidateToReturn = _mapper.Map<CandidateDto>(candidate);
+
+            return candidateToReturn;
         }
     }
 }

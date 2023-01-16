@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
@@ -17,5 +18,14 @@ namespace Repository
             candidate.UpdatedAt = DateTime.Now;
             Create(candidate);
         }
+
+        public async Task<Candidate> GetCandidateForPollAsync(Guid pollId, Guid id, bool trackChanges)
+        {
+            var candidate = await FindByCondition(c => c.PollId.Equals(pollId) && c.Id.Equals(id), trackChanges)
+                .SingleOrDefaultAsync();
+
+            return candidate;
+        }
+            
     }
 }

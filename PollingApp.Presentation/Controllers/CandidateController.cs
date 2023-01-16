@@ -25,7 +25,7 @@ namespace PollingApp.Presentation.Controllers
         {
             var candidateToReturn = await _services.CandidateService.CreateCandidateForPollAsync(userId, pollId, candidateForCreation, trackChanges: false);
 
-            return Ok(candidateToReturn);
+            return CreatedAtRoute("GetCandidateForPoll", new { userId, pollId, id = candidateToReturn.Id }, candidateToReturn);
         }
     }
 }

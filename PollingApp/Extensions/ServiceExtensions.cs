@@ -43,6 +43,7 @@ namespace PollingApp.Extensions
             {
                 config.OutputFormatters.Add(new UserCsvOutputFormatter());
                 config.OutputFormatters.Add(new PollCsvOutputFormatter());
+                config.OutputFormatters.Add(new CandidateCsvOutputFormatter());
             });
 
         public static void ConfigureIdentity(this IServiceCollection services)

@@ -31,6 +31,9 @@ namespace PollingApp.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCandidateForPoll(Guid userId, Guid pollId, [FromBody] CandidateForCreationDto candidateForCreation)
         {
+            if (candidateForCreation is null)
+                return BadRequest("CandidateForCreationDto object is null");
+
             var candidateToReturn = await _services.CandidateService.CreateCandidateForPollAsync(userId, pollId, candidateForCreation, trackChanges: false);
 
             return CreatedAtRoute("GetCandidateForPoll", new { userId, pollId, id = candidateToReturn.Id }, candidateToReturn);

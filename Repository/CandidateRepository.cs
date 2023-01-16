@@ -26,6 +26,10 @@ namespace Repository
 
             return candidate;
         }
+
+        public async Task<IEnumerable<Candidate>> GetCandidatesForPollAsync(Guid pollId, bool trackChanges)
+            => await FindByCondition(c => c.PollId.Equals(pollId), trackChanges)
+            .ToListAsync();
             
     }
 }

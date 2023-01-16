@@ -53,7 +53,20 @@ namespace Service
             var candidateToReturn = _mapper.Map<CandidateDto>(candidateEntity);
 
             return candidateToReturn;
+        }
 
+        public async Task<IEnumerable<CandidateDto>> GetCandidatesForPollAsync(Guid userId, Guid pollId, bool pollTrackChanges, bool candTrackChanges)
+        {
+            var poll = await _repository.Poll.GetPollForUserAsync(userId, pollId, pollTrackChanges);
+
+            if (poll == null)
+                throw new PollNotFoundException(pollId);
+
+            var candidateEntity = await _repository.Candidate.GetCandidatesForPollAsync(pollId, candTrackChanges);
+
+            var candidateToReturn = _mapper.Map<IEnumerable<CandidateDto>>(candidateEntity);
+
+            return candidateToReturn;
         }
     }
 }

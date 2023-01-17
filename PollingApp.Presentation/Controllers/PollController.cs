@@ -20,7 +20,7 @@ namespace PollingApp.Presentation.Controllers
             return Ok(polls);
         }
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("{id:guid}", Name = "GetPollForUser")]
         public async Task<IActionResult> GetPollForUser(Guid userId, Guid id)
         {
             var poll = await _services.PollService.GetPollForUserAsync(userId, id, trackChanges:false);
@@ -31,10 +31,12 @@ namespace PollingApp.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePollForUser(Guid userId, [FromBody] PollForCreationDto pollForCreation)
         {
+            if (pollForCreation is null)
+                return BadRequest("PollForCreation is null");
+
             var pollToReturn = await _services.PollService.CreatePollForUserAsync(userId, pollForCreation);
 
-            //return CreatedAtRoute("GetPollForUser", new { userId, id = pollToReturn.Id }, pollToReturn);
-            return Ok(pollToReturn);
+            return CreatedAtRoute("GetPollForUser", new { userId, id = pollToReturn.Id }, pollToReturn);
         }
     }
 }

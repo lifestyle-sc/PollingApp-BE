@@ -1,5 +1,6 @@
 using Contracts;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 using NLog;
 using PollingApp.Extensions;
 
@@ -24,6 +25,10 @@ builder.Services.AddControllers(config =>
     .AddXmlDataContractSerializerFormatters()
     .AddCustomCsvFormatter()
     .AddApplicationPart(typeof(PollingApp.Presentation.AssemblyReference).Assembly);
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
 

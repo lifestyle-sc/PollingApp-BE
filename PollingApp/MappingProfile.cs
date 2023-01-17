@@ -15,6 +15,10 @@ namespace PollingApp
             CreateMap<PollForCreationDto, Poll>();
 
             CreateMap<Poll, PollDto>();
+
+            CreateMap<CandidateForCreationDto, Candidate>();
+
+            CreateMap<Candidate, CandidateDto>();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PollingApp.Presentation.ModelBinders;
 using Service.Contracts;
 using Shared.DTOs;
 
@@ -29,7 +30,7 @@ namespace PollingApp.Presentation.Controllers
         }
 
         [HttpGet("collection/{ids}", Name = "GetPollsByIdsForUser")]
-        public async Task<IActionResult> GetPollsByIdsForUser(Guid userId, IEnumerable<Guid> ids)
+        public async Task<IActionResult> GetPollsByIdsForUser(Guid userId, [ModelBinder(BinderType = typeof(ArrayModelBinder))]IEnumerable<Guid> ids)
         {
             var pollToReturn = await _services.PollService.GetPollsByIdsForUserAsync(userId, ids, trackChanges:false);
 

@@ -28,6 +28,14 @@ namespace PollingApp.Presentation.Controllers
             return Ok(poll);
         }
 
+        [HttpGet("{ids}", Name = "GetPollsByIdsForUser")]
+        public async Task<IActionResult> GetPollsByIdsForUser(Guid userId, IEnumerable<Guid> ids)
+        {
+            var pollToReturn = await _services.PollService.GetPollsByIdsForUserAsync(userId, ids, trackChanges:false);
+
+            return Ok(pollToReturn);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreatePollForUser(Guid userId, [FromBody] PollForCreationDto pollForCreation)
         {

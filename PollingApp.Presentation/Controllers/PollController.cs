@@ -28,7 +28,7 @@ namespace PollingApp.Presentation.Controllers
             return Ok(poll);
         }
 
-        [HttpGet("{ids}", Name = "GetPollsByIdsForUser")]
+        [HttpGet("collection/{ids}", Name = "GetPollsByIdsForUser")]
         public async Task<IActionResult> GetPollsByIdsForUser(Guid userId, IEnumerable<Guid> ids)
         {
             var pollToReturn = await _services.PollService.GetPollsByIdsForUserAsync(userId, ids, trackChanges:false);
@@ -45,6 +45,14 @@ namespace PollingApp.Presentation.Controllers
             var pollToReturn = await _services.PollService.CreatePollForUserAsync(userId, pollForCreation);
 
             return CreatedAtRoute("GetPollForUser", new { userId, id = pollToReturn.Id }, pollToReturn);
+        }
+
+        [HttpPost("collection")]
+        public async Task<IActionResult> CreatePollCollectionForUser(Guid userId, [FromBody] IEnumerable<PollForCreationDto> pollsForCreation)
+        {
+            var result = await _services.PollService.CreatePollCollectionForUserAsync(userId, pollsForCreation);
+
+            return CreatedAtRoute("GetPollsByIdsForUser", new { userId, result.ids }, result.pollsToReturn);
         }
     }
 }

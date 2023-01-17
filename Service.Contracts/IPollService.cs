@@ -12,6 +12,6 @@ namespace Service.Contracts
 
         Task<IEnumerable<PollDto>> GetPollsByIdsForUserAsync(Guid userId, IEnumerable<Guid> ids, bool trackChanges);
 
-        //Task<(IEnumerable<PollDto> createdPolls, string ids)> CreatePollsCollectionForUserAsync(Guid userId, IEnumerable<PollForCreationDto> pollsForCreation);
+        Task<(IEnumerable<PollDto> pollsToReturn, string ids)> CreatePollCollectionForUserAsync(Guid userId, IEnumerable<PollForCreationDto> pollsForCreation);
     }
 }

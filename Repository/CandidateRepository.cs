@@ -30,6 +30,9 @@ namespace Repository
         public async Task<IEnumerable<Candidate>> GetCandidatesForPollAsync(Guid pollId, bool trackChanges)
             => await FindByCondition(c => c.PollId.Equals(pollId), trackChanges)
             .ToListAsync();
+
+        public void DeleteCandidateForPoll(Candidate candidate)
+            => Delete(candidate);
             
     }
 }

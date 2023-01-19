@@ -7,5 +7,7 @@ namespace Service.Contracts
         Task<CandidateDto> CreateCandidateForPollAsync(Guid userId, Guid pollId, CandidateForCreationDto candidateForCreation, bool trackChanges);
         Task<CandidateDto> GetCandidateForPollAsync(Guid userId, Guid pollId, Guid id, bool pollTrackChanges, bool candTrackChanges);
         Task<IEnumerable<CandidateDto>> GetCandidatesForPollAsync(Guid userId, Guid pollId, bool pollTrackChanges, bool candTrackChanges);
+        Task DeleteCandidateForPollAsync(Guid userId, Guid pollId, Guid id, bool pollTrackChanges, bool candTrackChanges);
+        Task UpdateCandidateForPollAsync(Guid userId, Guid pollId, Guid id, CandidateForUpdateDto candidateForUpdate, bool pollTrackChanges, bool candTrackChanges);
     }
 }

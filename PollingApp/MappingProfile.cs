@@ -19,6 +19,8 @@ namespace PollingApp
             CreateMap<CandidateForCreationDto, Candidate>();
 
             CreateMap<Candidate, CandidateDto>();
+
+            CreateMap<CandidateForUpdateDto, Candidate>();
         }
     }
 }

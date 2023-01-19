@@ -38,5 +38,21 @@ namespace PollingApp.Presentation.Controllers
 
             return CreatedAtRoute("GetCandidateForPoll", new { userId, pollId, id = candidateToReturn.Id }, candidateToReturn);
         }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteCandidateForPoll(Guid userId, Guid pollId, Guid id)
+        {
+            await _services.CandidateService.DeleteCandidateForPollAsync(userId, pollId, id, pollTrackChanges: false, candTrackChanges: false);
+
+            return NoContent();     
+        }
+
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> UpdateCandidateForPoll(Guid userId, Guid pollId, Guid id, [FromBody]CandidateForUpdateDto candidateForUpdate)
+        {
+            await _services.CandidateService.UpdateCandidateForPollAsync(userId, pollId, id, candidateForUpdate, pollTrackChanges: false, candTrackChanges: true);
+
+            return NoContent();
+        }
     }
 }

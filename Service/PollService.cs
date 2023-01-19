@@ -74,5 +74,50 @@ namespace Service
 
             return pollToReturn;
         }
+
+        public async Task<IEnumerable<PollDto>> GetPollsByIdsForUserAsync(Guid userId, IEnumerable<Guid> ids, bool trackChanges)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                throw new UserNotFoundException(userId);
+
+            if (ids == null)
+                throw new IdsParameterBadRequest();
+
+            var pollEntities = await _repository.Poll.GetPollsByIdsForUserAsync(userId, ids, trackChanges);
+
+            if(pollEntities.Count() != ids.Count())
+                throw new CollectionByIdsBadRequest();
+
+            var pollToReturn = _mapper.Map<IEnumerable<PollDto>>(pollEntities);
+
+            return pollToReturn;
+        }
+
+        public async Task<(IEnumerable<PollDto> pollsToReturn, string ids)> CreatePollCollectionForUserAsync(Guid userId, IEnumerable<PollForCreationDto> pollsForCreation)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+            if (user == null)
+                throw new UserNotFoundException(userId);
+
+            if (pollsForCreation is null)
+                throw new PollCollectionBadRequest();
+
+            var pollsEntity = _mapper.Map<IEnumerable<Poll>>(pollsForCreation);
+
+            foreach (var poll in pollsEntity)
+            {
+                _repository.Poll.CreatePollForUser(userId, poll);
+            }
+
+            await _repository.SaveAsync();
+
+            var pollsToReturn = _mapper.Map<IEnumerable<PollDto>>(pollsEntity);
+
+            var ids = string.Join(",", pollsToReturn.Select(p => p.Id));
+
+            return (pollsToReturn, ids);
+        }
     }
 }

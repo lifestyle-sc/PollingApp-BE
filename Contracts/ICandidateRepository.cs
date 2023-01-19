@@ -8,6 +8,6 @@ namespace Contracts
 
         Task<Candidate> GetCandidateForPollAsync(Guid pollId, Guid id, bool trackChanges);
         Task<IEnumerable<Candidate>> GetCandidatesForPollAsync(Guid pollId, bool trackChanges);
-        void DeletePollForUser(Candidate candidate);
+        void DeleteCandidateForPoll(Candidate candidate);
     }
 }

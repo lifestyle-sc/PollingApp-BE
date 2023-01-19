@@ -69,7 +69,7 @@ namespace Service
             return candidateToReturn;
         }
 
-        public async Task DeletePollForUserAsync(Guid userId, Guid pollId, Guid id, bool pollTrackChanges, bool candTrackChanges)
+        public async Task DeleteCandidateForPollAsync(Guid userId, Guid pollId, Guid id, bool pollTrackChanges, bool candTrackChanges)
         {
             var poll = await _repository.Poll.GetPollForUserAsync(userId, pollId, pollTrackChanges);
             if (poll == null)
@@ -79,7 +79,7 @@ namespace Service
             if(candidateEntity == null)
                 throw new CandidateNotFoundException(id);
 
-            _repository.Candidate.DeletePollForUser(candidateEntity);
+            _repository.Candidate.DeleteCandidateForPoll(candidateEntity);
 
             await _repository.SaveAsync();
         }

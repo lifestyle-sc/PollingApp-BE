@@ -42,7 +42,7 @@ namespace PollingApp.Presentation.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteCandidateForPoll(Guid userId, Guid pollId, Guid id)
         {
-            await _services.CandidateService.DeletePollForUserAsync(userId, pollId, id, pollTrackChanges: false, candTrackChanges: false);
+            await _services.CandidateService.DeleteCandidateForPollAsync(userId, pollId, id, pollTrackChanges: false, candTrackChanges: false);
 
             return NoContent();     
         }

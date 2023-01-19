@@ -31,7 +31,7 @@ namespace Repository
             => await FindByCondition(c => c.PollId.Equals(pollId), trackChanges)
             .ToListAsync();
 
-        public void DeletePollForUser(Candidate candidate)
+        public void DeleteCandidateForPoll(Candidate candidate)
             => Delete(candidate);
             
     }

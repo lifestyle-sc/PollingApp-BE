@@ -68,5 +68,20 @@ namespace Service
 
             return candidateToReturn;
         }
+
+        public async Task DeletePollForUserAsync(Guid userId, Guid pollId, Guid id, bool pollTrackChanges, bool candTrackChanges)
+        {
+            var poll = await _repository.Poll.GetPollForUserAsync(userId, pollId, pollTrackChanges);
+            if (poll == null)
+                throw new PollNotFoundException(pollId);
+
+            var candidateEntity = await _repository.Candidate.GetCandidateForPollAsync(pollId, id, candTrackChanges);
+            if(candidateEntity == null)
+                throw new CandidateNotFoundException(id);
+
+            _repository.Candidate.DeletePollForUser(candidateEntity);
+
+            await _repository.SaveAsync();
+        }
     }
 }

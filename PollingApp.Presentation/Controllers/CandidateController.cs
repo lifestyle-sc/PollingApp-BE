@@ -38,5 +38,13 @@ namespace PollingApp.Presentation.Controllers
 
             return CreatedAtRoute("GetCandidateForPoll", new { userId, pollId, id = candidateToReturn.Id }, candidateToReturn);
         }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteCandidateForPoll(Guid userId, Guid pollId, Guid id)
+        {
+            await _services.CandidateService.DeletePollForUserAsync(userId, pollId, id, pollTrackChanges: false, candTrackChanges: false);
+
+            return NoContent();     
+        }
     }
 }

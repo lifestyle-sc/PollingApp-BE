@@ -10,5 +10,6 @@ namespace Shared.DTOs
         [Required(ErrorMessage = "Deadline of poll is a requried field.")]
         public DateTime Deadline { get; init; }
         public bool IsDisabled { get; init; }
+        public IEnumerable<CandidateForCreationDto>? Candidates { get; init; }
     }
 }

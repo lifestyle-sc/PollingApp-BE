@@ -119,5 +119,20 @@ namespace Service
 
             return (pollsToReturn, ids);
         }
+
+        public async Task DeletePollForUser(Guid userId, Guid id, bool trackChanges)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                throw new UserNotFoundException(userId);
+
+            var pollEntity = await _repository.Poll.GetPollForUserAsync(userId, id, trackChanges);
+            if(pollEntity == null)
+                throw new PollNotFoundException(id);
+
+            _repository.Poll.DeletePollForUser(pollEntity);
+
+            await _repository.SaveAsync();
+        }
     }
 }

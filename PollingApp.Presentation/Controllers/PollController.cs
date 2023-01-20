@@ -56,10 +56,21 @@ namespace PollingApp.Presentation.Controllers
             return CreatedAtRoute("GetPollsByIdsForUser", new { userId, result.ids }, result.pollsToReturn);
         }
 
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> UpdatePollForUser(Guid userId, Guid id, PollForUpdateDto pollForUpdate)
+        {
+            if (pollForUpdate is null)
+                return BadRequest("The PollForUpdateDto object is null");
+
+            await _services.PollService.UpdatePollForUserAsync(userId, id, pollForUpdate, pollTrackChanges: true);
+
+            return NoContent();
+        }
+
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeletePollForUser(Guid userId, Guid id)
         {
-            await _services.PollService.DeletePollForUser(userId, id, trackChanges: false);
+            await _services.PollService.DeletePollForUserAsync(userId, id, trackChanges: false);
 
             return NoContent();
         }

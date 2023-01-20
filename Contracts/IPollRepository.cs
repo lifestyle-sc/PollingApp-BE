@@ -11,5 +11,7 @@ namespace Contracts
         Task<Poll> GetPollForUserAsync(Guid userId, Guid id, bool trackChanges);
 
         Task<IEnumerable<Poll>> GetPollsByIdsForUserAsync(Guid userId, IEnumerable<Guid> ids, bool trackChanges);
+
+        void DeletePollForUser(Poll poll);
     }
 }

@@ -39,5 +39,8 @@ namespace Repository
         public async Task<IEnumerable<Poll>> GetPollsByIdsForUserAsync(Guid userId, IEnumerable<Guid> ids, bool trackChanges)
             => await FindByCondition(p => p.UserId == userId.ToString() && ids.Contains(p.Id), trackChanges)
             .ToListAsync();
+
+        public void DeletePollForUser(Poll poll)
+            => Delete(poll);
     }
 }

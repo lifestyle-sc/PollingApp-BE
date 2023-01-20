@@ -120,7 +120,7 @@ namespace Service
             return (pollsToReturn, ids);
         }
 
-        public async Task DeletePollForUser(Guid userId, Guid id, bool trackChanges)
+        public async Task DeletePollForUserAsync(Guid userId, Guid id, bool trackChanges)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
@@ -131,6 +131,21 @@ namespace Service
                 throw new PollNotFoundException(id);
 
             _repository.Poll.DeletePollForUser(pollEntity);
+
+            await _repository.SaveAsync();
+        }
+
+        public async Task UpdatePollForUserAsync(Guid userId, Guid id, PollForUpdateDto pollForUpdate, bool pollTrackChanges)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                throw new UserNotFoundException(userId);
+
+            var pollEntity = await _repository.Poll.GetPollForUserAsync(userId, id, pollTrackChanges);
+            if (pollEntity == null)
+                throw new PollNotFoundException(id);
+
+            _mapper.Map(pollForUpdate, pollEntity);
 
             await _repository.SaveAsync();
         }

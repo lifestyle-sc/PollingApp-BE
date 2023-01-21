@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DTOs;
 
@@ -50,7 +51,25 @@ namespace PollingApp.Presentation.Controllers
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateCandidateForPoll(Guid userId, Guid pollId, Guid id, [FromBody]CandidateForUpdateDto candidateForUpdate)
         {
+            if (candidateForUpdate is null)
+                return BadRequest("The candidateForPollDto object is null.");
+
             await _services.CandidateService.UpdateCandidateForPollAsync(userId, pollId, id, candidateForUpdate, pollTrackChanges: false, candTrackChanges: true);
+
+            return NoContent();
+        }
+
+        [HttpPatch("{id:guid}")]
+        public async Task<IActionResult> PartiallyUpdateCandidateForPoll(Guid userId, Guid pollId, Guid id, [FromBody] JsonPatchDocument<CandidateForUpdateDto> patchDoc)
+        {
+            if (patchDoc is null)
+                return BadRequest("The patchDoc sent by the client is null.");
+
+            var result = await _services.CandidateService.GetCandidateForPatchAsync(userId, pollId, id, pollTrackChanges: false, candTrackChanges: true);
+
+            patchDoc.ApplyTo(result.candidateForPatch);
+
+            await _services.CandidateService.SaveChangesForPatchAsync(result.candidateForPatch, result.candidateEntity);
 
             return NoContent();
         }

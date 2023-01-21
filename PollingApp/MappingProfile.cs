@@ -16,7 +16,7 @@ namespace PollingApp
 
             CreateMap<Poll, PollDto>();
 
-            CreateMap<PollForUpdateDto, Poll>();
+            CreateMap<PollForUpdateDto, Poll>().ReverseMap();
 
             CreateMap<CandidateForCreationDto, Candidate>();
 

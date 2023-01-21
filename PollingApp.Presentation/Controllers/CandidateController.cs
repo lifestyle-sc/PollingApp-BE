@@ -63,7 +63,7 @@ namespace PollingApp.Presentation.Controllers
         public async Task<IActionResult> PartiallyUpdateCandidateForPoll(Guid userId, Guid pollId, Guid id, [FromBody] JsonPatchDocument<CandidateForUpdateDto> patchDoc)
         {
             if (patchDoc is null)
-                return BadRequest("The patchdoc sent by the client is null.");
+                return BadRequest("The patchDoc sent by the client is null.");
 
             var result = await _services.CandidateService.GetCandidateForPatchAsync(userId, pollId, id, pollTrackChanges: false, candTrackChanges: true);
 

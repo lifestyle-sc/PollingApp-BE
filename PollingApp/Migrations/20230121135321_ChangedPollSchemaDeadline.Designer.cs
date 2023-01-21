@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -11,9 +12,11 @@ using Repository;
 namespace PollingApp.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20230121135321_ChangedPollSchemaDeadline")]
+    partial class ChangedPollSchemaDeadline
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,9 +67,6 @@ namespace PollingApp.Migrations
 
                     b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDisabled")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -185,15 +185,15 @@ namespace PollingApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "65b787d6-29d6-4bf3-80a6-1116ebf46d5e",
-                            ConcurrencyStamp = "f528d18c-988b-4723-91e0-b7c2c5aa421e",
+                            Id = "cfb0f76e-543c-4406-9656-8b989555e11b",
+                            ConcurrencyStamp = "1155a60a-f17a-4d07-a73c-66a2121f8ceb",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "b6a5647a-61bd-4fed-88a7-750794a91a6b",
-                            ConcurrencyStamp = "dfac5ee1-def5-48c1-bcba-2e13e9184272",
+                            Id = "e38ead72-b64a-42ae-8903-038a7096e0cc",
+                            ConcurrencyStamp = "5656c609-360e-4fd9-a98b-0f63bfe82f73",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });

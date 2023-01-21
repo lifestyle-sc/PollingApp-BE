@@ -50,6 +50,9 @@ namespace PollingApp.Presentation.Controllers
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateCandidateForPoll(Guid userId, Guid pollId, Guid id, [FromBody]CandidateForUpdateDto candidateForUpdate)
         {
+            if (candidateForUpdate is null)
+                return BadRequest("The candidateForPollDto object is null.");
+
             await _services.CandidateService.UpdateCandidateForPollAsync(userId, pollId, id, candidateForUpdate, pollTrackChanges: false, candTrackChanges: true);
 
             return NoContent();

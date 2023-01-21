@@ -22,7 +22,7 @@ namespace PollingApp
 
             CreateMap<Candidate, CandidateDto>();
 
-            CreateMap<CandidateForUpdateDto, Candidate>();
+            CreateMap<CandidateForUpdateDto, Candidate>().ReverseMap();
         }
     }
 }

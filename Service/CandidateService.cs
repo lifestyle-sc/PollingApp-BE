@@ -98,5 +98,27 @@ namespace Service
 
             await _repository.SaveAsync();
         }
+
+        public async Task<(CandidateForUpdateDto candidateForPatch, Candidate candidateEntity)>GetCandidateForPatchAsync(Guid userId, Guid pollId, Guid id, bool pollTrackChanges, bool candTrackChanges)
+        {
+            var poll = await _repository.Poll.GetPollForUserAsync(userId, pollId, pollTrackChanges);
+            if (poll == null)
+                throw new PollNotFoundException(pollId);
+
+            var candidateEntity = await _repository.Candidate.GetCandidateForPollAsync(pollId, id, candTrackChanges);
+            if (candidateEntity == null)
+                throw new CandidateNotFoundException(id);
+
+            var candidateForPatch = _mapper.Map<CandidateForUpdateDto>(candidateEntity);
+
+            return (candidateForPatch, candidateEntity);
+        }
+
+        public async Task SaveChangesForPatchAsync(CandidateForUpdateDto candidateForPatch, Candidate candidateEntity)
+        {
+            _mapper.Map(candidateForPatch, candidateEntity);
+
+            await _repository.SaveAsync();
+        }
     }
 }

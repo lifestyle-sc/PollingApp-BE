@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using PollingApp.Presentation.ModelBinders;
 using Service.Contracts;
 using Shared.DTOs;
@@ -71,6 +72,21 @@ namespace PollingApp.Presentation.Controllers
         public async Task<IActionResult> DeletePollForUser(Guid userId, Guid id)
         {
             await _services.PollService.DeletePollForUserAsync(userId, id, trackChanges: false);
+
+            return NoContent();
+        }
+
+        [HttpPatch("{id:guid}")]
+        public async Task<IActionResult> PartiallyUpdatePollForUser(Guid userId, Guid id, [FromBody] JsonPatchDocument<PollForUpdateDto> patchDoc)
+        {
+            if (patchDoc is null)
+                return BadRequest("The patchDoc sent by the client is null.");
+
+            var result = await _services.PollService.GetPollForPatchAsync(userId, id, pollTrackChanges: true);
+
+            patchDoc.ApplyTo(result.pollForPatch);
+
+            await _services.PollService.SaveChangesForPatchAsync(result.pollForPatch, result.pollEntity);
 
             return NoContent();
         }

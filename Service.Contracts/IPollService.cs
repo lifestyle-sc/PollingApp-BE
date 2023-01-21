@@ -1,4 +1,5 @@
-﻿using Shared.DTOs;
+﻿using Entities.Models;
+using Shared.DTOs;
 
 namespace Service.Contracts
 {
@@ -17,5 +18,9 @@ namespace Service.Contracts
         Task DeletePollForUserAsync(Guid userId, Guid id, bool trackChanges);
 
         Task UpdatePollForUserAsync(Guid userId, Guid id, PollForUpdateDto pollForUpdate, bool pollTrackChanges);
+
+        Task<(PollForUpdateDto pollForPatch, Poll pollEntity)> GetPollForPatchAsync(Guid userId, Guid id, bool pollTrackChanges);
+
+        Task SaveChangesForPatchAsync(PollForUpdateDto pollForPatch, Poll pollEntity);
     }
 }

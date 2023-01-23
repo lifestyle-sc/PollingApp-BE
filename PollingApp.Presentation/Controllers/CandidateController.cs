@@ -57,6 +57,9 @@ namespace PollingApp.Presentation.Controllers
             if (candidateForUpdate is null)
                 return BadRequest("The candidateForPollDto object is null.");
 
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             await _services.CandidateService.UpdateCandidateForPollAsync(userId, pollId, id, candidateForUpdate, pollTrackChanges: false, candTrackChanges: true);
 
             return NoContent();

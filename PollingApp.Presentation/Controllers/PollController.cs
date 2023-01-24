@@ -42,7 +42,10 @@ namespace PollingApp.Presentation.Controllers
         public async Task<IActionResult> CreatePollForUser(Guid userId, [FromBody] PollForCreationDto pollForCreation)
         {
             if (pollForCreation is null)
-                return BadRequest("PollForCreation is null");
+                return BadRequest("The PollForCreationDto object sent from the client is null");
+
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
 
             var pollToReturn = await _services.PollService.CreatePollForUserAsync(userId, pollForCreation);
 
@@ -52,6 +55,12 @@ namespace PollingApp.Presentation.Controllers
         [HttpPost("collection")]
         public async Task<IActionResult> CreatePollCollectionForUser(Guid userId, [FromBody] IEnumerable<PollForCreationDto> pollsForCreation)
         {
+            if (pollsForCreation is null)
+                return BadRequest("The PollsForCreationDto object sent from the client is null");
+
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             var result = await _services.PollService.CreatePollCollectionForUserAsync(userId, pollsForCreation);
 
             return CreatedAtRoute("GetPollsByIdsForUser", new { userId, result.ids }, result.pollsToReturn);

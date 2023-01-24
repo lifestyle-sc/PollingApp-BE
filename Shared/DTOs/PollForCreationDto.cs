@@ -2,7 +2,7 @@
 
 namespace Shared.DTOs
 {
-    public record PollForCreationDto
+    public record PollForCreationDto : IValidatableObject
     {
         [Required(ErrorMessage = "Name of poll is a required field.")]
         public string? Name { get; init; }
@@ -11,5 +11,12 @@ namespace Shared.DTOs
         public DateTime Deadline { get; init; }
         public bool IsDisabled { get; init; }
         public IEnumerable<CandidateForCreationDto>? Candidates { get; init; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            var errorMessage = $"The deadline is in the past.";
+            if(Deadline <= DateTime.Now)
+                yield return new ValidationResult(errorMessage, new[] { nameof(Deadline) });
+        }
     }
 }

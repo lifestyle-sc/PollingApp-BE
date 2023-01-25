@@ -96,7 +96,11 @@ namespace PollingApp.Presentation.Controllers
 
             var result = await _services.PollService.GetPollForPatchAsync(userId, id, pollTrackChanges: true);
 
-            patchDoc.ApplyTo(result.pollForPatch);
+            patchDoc.ApplyTo(result.pollForPatch, ModelState);
+
+            TryValidateModel(result.pollForPatch);
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
 
             await _services.PollService.SaveChangesForPatchAsync(result.pollForPatch, result.pollEntity);
 

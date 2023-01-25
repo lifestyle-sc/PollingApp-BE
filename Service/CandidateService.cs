@@ -20,12 +20,27 @@ namespace Service
             _mapper = mapper;
         }
 
-        public async Task<CandidateDto> CreateCandidateForPollAsync(Guid userId, Guid pollId, CandidateForCreationDto candidateForCreation, bool trackChanges)
+        private async Task CheckIfPollExistsAsync(Guid userId, Guid pollId, bool trackChanges)
         {
             var poll = await _repository.Poll.GetPollForUserAsync(userId, pollId, trackChanges);
 
             if (poll == null)
                 throw new PollNotFoundException(pollId);
+        }
+
+        private async Task<Candidate> CheckIfCandidateExistsAndReturnItAsync(Guid pollId, Guid id, bool trackChanges)
+        {
+            var candidateEntity = await _repository.Candidate.GetCandidateForPollAsync(pollId, id, trackChanges);
+
+            if (candidateEntity == null)
+                throw new CandidateNotFoundException(id);
+
+            return candidateEntity;
+        }
+
+        public async Task<CandidateDto> CreateCandidateForPollAsync(Guid userId, Guid pollId, CandidateForCreationDto candidateForCreation, bool trackChanges)
+        {
+            await CheckIfPollExistsAsync(userId, pollId, trackChanges);
 
             var candidate = _mapper.Map<Candidate>(candidateForCreation);
 
@@ -40,15 +55,9 @@ namespace Service
 
         public async Task<CandidateDto> GetCandidateForPollAsync(Guid userId, Guid pollId, Guid id, bool pollTrackChanges, bool candTrackChanges)
         {
-            var poll = await _repository.Poll.GetPollForUserAsync(userId, pollId, pollTrackChanges);
+            await CheckIfPollExistsAsync(userId, pollId, pollTrackChanges);
 
-            if (poll == null)
-                throw new PollNotFoundException(pollId);
-
-            var candidateEntity = await _repository.Candidate.GetCandidateForPollAsync(pollId, id, candTrackChanges);
-
-            if (candidateEntity == null)
-                throw new CandidateNotFoundException(id);
+            var candidateEntity = await CheckIfCandidateExistsAndReturnItAsync(pollId, id, candTrackChanges);
 
             var candidateToReturn = _mapper.Map<CandidateDto>(candidateEntity);
 
@@ -57,10 +66,7 @@ namespace Service
 
         public async Task<IEnumerable<CandidateDto>> GetCandidatesForPollAsync(Guid userId, Guid pollId, bool pollTrackChanges, bool candTrackChanges)
         {
-            var poll = await _repository.Poll.GetPollForUserAsync(userId, pollId, pollTrackChanges);
-
-            if (poll == null)
-                throw new PollNotFoundException(pollId);
+            await CheckIfPollExistsAsync(userId, pollId, pollTrackChanges);
 
             var candidateEntity = await _repository.Candidate.GetCandidatesForPollAsync(pollId, candTrackChanges);
 
@@ -71,13 +77,9 @@ namespace Service
 
         public async Task DeleteCandidateForPollAsync(Guid userId, Guid pollId, Guid id, bool pollTrackChanges, bool candTrackChanges)
         {
-            var poll = await _repository.Poll.GetPollForUserAsync(userId, pollId, pollTrackChanges);
-            if (poll == null)
-                throw new PollNotFoundException(pollId);
+            await CheckIfPollExistsAsync(userId, pollId, pollTrackChanges);
 
-            var candidateEntity = await _repository.Candidate.GetCandidateForPollAsync(pollId, id, candTrackChanges);
-            if(candidateEntity == null)
-                throw new CandidateNotFoundException(id);
+            var candidateEntity = await CheckIfCandidateExistsAndReturnItAsync(pollId, id, candTrackChanges);
 
             _repository.Candidate.DeleteCandidateForPoll(candidateEntity);
 
@@ -86,13 +88,9 @@ namespace Service
 
         public async Task UpdateCandidateForPollAsync(Guid userId, Guid pollId, Guid id, CandidateForUpdateDto candidateForUpdate, bool pollTrackChanges, bool candTrackChanges)
         {
-            var poll = await _repository.Poll.GetPollForUserAsync(userId, pollId, pollTrackChanges);
-            if (poll == null)
-                throw new PollNotFoundException(pollId);
+            await CheckIfPollExistsAsync(userId, pollId, pollTrackChanges);
 
-            var candidateEntity = await _repository.Candidate.GetCandidateForPollAsync(pollId, id, candTrackChanges);
-            if (candidateEntity == null)
-                throw new CandidateNotFoundException(id);
+            var candidateEntity = await CheckIfCandidateExistsAndReturnItAsync(pollId, id, candTrackChanges);
 
             _mapper.Map(candidateForUpdate, candidateEntity);
 
@@ -101,13 +99,9 @@ namespace Service
 
         public async Task<(CandidateForUpdateDto candidateForPatch, Candidate candidateEntity)>GetCandidateForPatchAsync(Guid userId, Guid pollId, Guid id, bool pollTrackChanges, bool candTrackChanges)
         {
-            var poll = await _repository.Poll.GetPollForUserAsync(userId, pollId, pollTrackChanges);
-            if (poll == null)
-                throw new PollNotFoundException(pollId);
+            await CheckIfPollExistsAsync(userId, pollId, pollTrackChanges);
 
-            var candidateEntity = await _repository.Candidate.GetCandidateForPollAsync(pollId, id, candTrackChanges);
-            if (candidateEntity == null)
-                throw new CandidateNotFoundException(id);
+            var candidateEntity = await CheckIfCandidateExistsAndReturnItAsync(pollId, id, candTrackChanges);
 
             var candidateForPatch = _mapper.Map<CandidateForUpdateDto>(candidateEntity);
 

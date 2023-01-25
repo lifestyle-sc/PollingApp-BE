@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using PollingApp.Presentation.ActionFilters;
 using PollingApp.Presentation.ModelBinders;
 using Service.Contracts;
 using Shared.DTOs;
@@ -39,42 +40,27 @@ namespace PollingApp.Presentation.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreatePollForUser(Guid userId, [FromBody] PollForCreationDto pollForCreation)
         {
-            if (pollForCreation is null)
-                return BadRequest("The PollForCreationDto object sent from the client is null");
-
-            if (!ModelState.IsValid)
-                return UnprocessableEntity(ModelState);
-
             var pollToReturn = await _services.PollService.CreatePollForUserAsync(userId, pollForCreation);
 
             return CreatedAtRoute("GetPollForUser", new { userId, id = pollToReturn.Id }, pollToReturn);
         }
 
         [HttpPost("collection")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreatePollCollectionForUser(Guid userId, [FromBody] IEnumerable<PollForCreationDto> pollsForCreation)
         {
-            if (pollsForCreation is null)
-                return BadRequest("The PollsForCreationDto object sent from the client is null");
-
-            if (!ModelState.IsValid)
-                return UnprocessableEntity(ModelState);
-
             var result = await _services.PollService.CreatePollCollectionForUserAsync(userId, pollsForCreation);
 
             return CreatedAtRoute("GetPollsByIdsForUser", new { userId, result.ids }, result.pollsToReturn);
         }
 
         [HttpPut("{id:guid}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdatePollForUser(Guid userId, Guid id, PollForUpdateDto pollForUpdate)
-        {
-            if (pollForUpdate is null)
-                return BadRequest("The PollForUpdateDto object is null");
-
-            if(!ModelState.IsValid)
-                return UnprocessableEntity(ModelState);
-
+        { 
             await _services.PollService.UpdatePollForUserAsync(userId, id, pollForUpdate, pollTrackChanges: true);
 
             return NoContent();

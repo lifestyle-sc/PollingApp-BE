@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using PollingApp.Presentation.ActionFilters;
 using Service.Contracts;
 using Shared.DTOs;
 
@@ -30,14 +31,9 @@ namespace PollingApp.Presentation.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateCandidateForPoll(Guid userId, Guid pollId, [FromBody] CandidateForCreationDto candidateForCreation)
         {
-            if (candidateForCreation is null)
-                return BadRequest("CandidateForCreationDto object is null");
-
-            if (!ModelState.IsValid)
-                return UnprocessableEntity(ModelState);
-
             var candidateToReturn = await _services.CandidateService.CreateCandidateForPollAsync(userId, pollId, candidateForCreation, trackChanges: false);
 
             return CreatedAtRoute("GetCandidateForPoll", new { userId, pollId, id = candidateToReturn.Id }, candidateToReturn);
@@ -52,14 +48,9 @@ namespace PollingApp.Presentation.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateCandidateForPoll(Guid userId, Guid pollId, Guid id, [FromBody]CandidateForUpdateDto candidateForUpdate)
         {
-            if (candidateForUpdate is null)
-                return BadRequest("The candidateForPollDto object is null.");
-
-            if (!ModelState.IsValid)
-                return UnprocessableEntity(ModelState);
-
             await _services.CandidateService.UpdateCandidateForPollAsync(userId, pollId, id, candidateForUpdate, pollTrackChanges: false, candTrackChanges: true);
 
             return NoContent();

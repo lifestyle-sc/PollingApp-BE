@@ -5,6 +5,7 @@ using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Service.Contracts;
 using Shared.DTOs;
+using Shared.RequestFeatures;
 
 namespace Service
 {
@@ -59,11 +60,11 @@ namespace Service
             return pollToReturn;
         }
 
-        public async Task<IEnumerable<PollDto>> GetPollsForUserAsync(Guid userId, bool trackChanges)
+        public async Task<IEnumerable<PollDto>> GetPollsForUserAsync(Guid userId, PollParameters pollParameters, bool trackChanges)
         {
             await CheckIfUserExistsAsync(userId);
 
-            var polls = await _repository.Poll.GetPollsForUserAsync(userId, trackChanges);
+            var polls = await _repository.Poll.GetPollsForUserAsync(userId, pollParameters, trackChanges);
 
             var pollsToReturn = _mapper.Map<IEnumerable<PollDto>>(polls);
 

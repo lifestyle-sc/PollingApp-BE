@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.RequestFeatures;
 
 namespace Repository
 {
@@ -19,10 +20,12 @@ namespace Repository
             Create(poll);
         }
 
-        public async Task<IEnumerable<Poll>> GetPollsForUserAsync(Guid userId, bool trackChanges)
+        public async Task<IEnumerable<Poll>> GetPollsForUserAsync(Guid userId, PollParameters pollParameters, bool trackChanges)
         {
             var polls = await FindByCondition(p => p.UserId == userId.ToString(), trackChanges)
                 .OrderBy(p => p.Name)
+                .Skip((pollParameters.PageNumber - 1) * pollParameters.PageSize)
+                .Take(pollParameters.PageSize)
                 .ToListAsync();
 
             return polls;

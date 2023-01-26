@@ -4,6 +4,7 @@ using PollingApp.Presentation.ActionFilters;
 using PollingApp.Presentation.ModelBinders;
 using Service.Contracts;
 using Shared.DTOs;
+using Shared.RequestFeatures;
 
 namespace PollingApp.Presentation.Controllers
 {
@@ -16,9 +17,9 @@ namespace PollingApp.Presentation.Controllers
         public PollController(IServiceManager services) => _services = services;
 
         [HttpGet]
-        public async Task<IActionResult> GetPollsForUser(Guid userId)
+        public async Task<IActionResult> GetPollsForUser(Guid userId, [FromQuery] PollParameters pollParameters)
         {
-            var polls = await _services.PollService.GetPollsForUserAsync(userId, trackChanges: false);
+            var polls = await _services.PollService.GetPollsForUserAsync(userId, pollParameters, trackChanges: false);
 
             return Ok(polls);
         }

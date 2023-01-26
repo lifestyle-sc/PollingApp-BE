@@ -1,5 +1,6 @@
 ﻿using Entities.Models;
 using Shared.DTOs;
+using Shared.RequestFeatures;
 
 namespace Service.Contracts
 {
@@ -7,7 +8,7 @@ namespace Service.Contracts
     {
         Task<PollDto> CreatePollForUserAsync(Guid userId, PollForCreationDto pollForCreation);
 
-        Task<IEnumerable<PollDto>> GetPollsForUserAsync(Guid userId, bool trackChanges);
+        Task<IEnumerable<PollDto>> GetPollsForUserAsync(Guid userId, PollParameters pollParameters, bool trackChanges);
 
         Task<PollDto> GetPollForUserAsync(Guid userId, Guid id, bool trackChanges);
 

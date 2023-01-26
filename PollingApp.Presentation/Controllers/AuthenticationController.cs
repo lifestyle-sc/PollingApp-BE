@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PollingApp.Presentation.ActionFilters;
 using Service.Contracts;
 using Shared.DTOs;
 
@@ -12,6 +13,7 @@ namespace PollingApp.Presentation.Controllers
         public AuthenticationController(IServiceManager services) => _services = services;
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForReg)
         {
             var result = await  _services.AuthenticationService.RegisterUser(userForReg);

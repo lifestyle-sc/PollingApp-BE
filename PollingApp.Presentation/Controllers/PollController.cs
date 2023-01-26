@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using PollingApp.Presentation.ActionFilters;
 using PollingApp.Presentation.ModelBinders;
 using Service.Contracts;
 using Shared.DTOs;
@@ -39,17 +40,16 @@ namespace PollingApp.Presentation.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreatePollForUser(Guid userId, [FromBody] PollForCreationDto pollForCreation)
         {
-            if (pollForCreation is null)
-                return BadRequest("PollForCreation is null");
-
             var pollToReturn = await _services.PollService.CreatePollForUserAsync(userId, pollForCreation);
 
             return CreatedAtRoute("GetPollForUser", new { userId, id = pollToReturn.Id }, pollToReturn);
         }
 
         [HttpPost("collection")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreatePollCollectionForUser(Guid userId, [FromBody] IEnumerable<PollForCreationDto> pollsForCreation)
         {
             var result = await _services.PollService.CreatePollCollectionForUserAsync(userId, pollsForCreation);
@@ -58,11 +58,9 @@ namespace PollingApp.Presentation.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdatePollForUser(Guid userId, Guid id, PollForUpdateDto pollForUpdate)
-        {
-            if (pollForUpdate is null)
-                return BadRequest("The PollForUpdateDto object is null");
-
+        { 
             await _services.PollService.UpdatePollForUserAsync(userId, id, pollForUpdate, pollTrackChanges: true);
 
             return NoContent();
@@ -84,7 +82,11 @@ namespace PollingApp.Presentation.Controllers
 
             var result = await _services.PollService.GetPollForPatchAsync(userId, id, pollTrackChanges: true);
 
-            patchDoc.ApplyTo(result.pollForPatch);
+            patchDoc.ApplyTo(result.pollForPatch, ModelState);
+
+            TryValidateModel(result.pollForPatch);
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
 
             await _services.PollService.SaveChangesForPatchAsync(result.pollForPatch, result.pollEntity);
 

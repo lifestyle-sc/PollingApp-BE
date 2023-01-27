@@ -43,6 +43,6 @@ namespace PollingApp.Formatter
             await response.WriteAsync(buffer.ToString());
         }
 
-        public virtual void FormatCsv(StringBuilder buffer, T entityDto) { }
+        protected virtual void FormatCsv(StringBuilder buffer, T entityDto) { }
     }
 }

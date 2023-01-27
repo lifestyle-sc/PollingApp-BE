@@ -20,15 +20,13 @@ namespace Repository
             Create(poll);
         }
 
-        public async Task<IEnumerable<Poll>> GetPollsForUserAsync(Guid userId, PollParameters pollParameters, bool trackChanges)
+        public async Task<PagedList<Poll>> GetPollsForUserAsync(Guid userId, PollParameters pollParameters, bool trackChanges)
         {
             var polls = await FindByCondition(p => p.UserId == userId.ToString(), trackChanges)
                 .OrderBy(p => p.Name)
-                .Skip((pollParameters.PageNumber - 1) * pollParameters.PageSize)
-                .Take(pollParameters.PageSize)
                 .ToListAsync();
 
-            return polls;
+            return PagedList<Poll>.ToPagedList(polls, pollParameters.PageNumber, pollParameters.PageSize);
         }
 
         public async Task<Poll> GetPollForUserAsync(Guid userId, Guid id, bool trackChanges)

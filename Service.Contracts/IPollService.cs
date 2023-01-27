@@ -8,7 +8,7 @@ namespace Service.Contracts
     {
         Task<PollDto> CreatePollForUserAsync(Guid userId, PollForCreationDto pollForCreation);
 
-        Task<IEnumerable<PollDto>> GetPollsForUserAsync(Guid userId, PollParameters pollParameters, bool trackChanges);
+        Task<(IEnumerable<PollDto> pollsToReturn, MetaData metaData)> GetPollsForUserAsync(Guid userId, PollParameters pollParameters, bool trackChanges);
 
         Task<PollDto> GetPollForUserAsync(Guid userId, Guid id, bool trackChanges);
 

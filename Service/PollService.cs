@@ -60,15 +60,15 @@ namespace Service
             return pollToReturn;
         }
 
-        public async Task<IEnumerable<PollDto>> GetPollsForUserAsync(Guid userId, PollParameters pollParameters, bool trackChanges)
+        public async Task<(IEnumerable<PollDto> pollsToReturn, MetaData metaData)> GetPollsForUserAsync(Guid userId, PollParameters pollParameters, bool trackChanges)
         {
             await CheckIfUserExistsAsync(userId);
 
-            var polls = await _repository.Poll.GetPollsForUserAsync(userId, pollParameters, trackChanges);
+            var pollsWithMetaData = await _repository.Poll.GetPollsForUserAsync(userId, pollParameters, trackChanges);
 
-            var pollsToReturn = _mapper.Map<IEnumerable<PollDto>>(polls);
+            var pollsToReturn = _mapper.Map<IEnumerable<PollDto>>(pollsWithMetaData);
 
-            return pollsToReturn;
+            return (pollsToReturn, metaData: pollsWithMetaData.MetaData);
         }
 
         public async Task<PollDto> GetPollForUserAsync(Guid userId, Guid id, bool trackChanges)

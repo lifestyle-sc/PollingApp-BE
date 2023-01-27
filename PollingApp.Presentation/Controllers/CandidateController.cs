@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using PollingApp.Presentation.ActionFilters;
 using Service.Contracts;
 using Shared.DTOs;
+using Shared.RequestFeatures;
+using System.Text.Json;
 
 namespace PollingApp.Presentation.Controllers
 {
@@ -15,11 +17,13 @@ namespace PollingApp.Presentation.Controllers
         public CandidateController(IServiceManager services) => _services = services;
 
         [HttpGet]
-        public async Task<IActionResult> GetCandidatesForPoll(Guid userId, Guid pollId)
+        public async Task<IActionResult> GetCandidatesForPoll(Guid userId, Guid pollId, [FromQuery] CandidateParameters candidateParameters)
         {
-            var candidatesToReturn = await _services.CandidateService.GetCandidatesForPollAsync(userId, pollId, pollTrackChanges: false, candTrackChanges: false);
+            var pagedResult = await _services.CandidateService.GetCandidatesForPollAsync(userId, pollId, candidateParameters, pollTrackChanges: false, candTrackChanges: false);
 
-            return Ok(candidatesToReturn);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+
+            return Ok(pagedResult.candidatesToReturn);
         }
 
         [HttpGet("{id:guid}", Name = "GetCandidateForPoll")]

@@ -4,6 +4,7 @@ using Entities.Exceptions;
 using Entities.Models;
 using Service.Contracts;
 using Shared.DTOs;
+using Shared.RequestFeatures;
 
 namespace Service
 {
@@ -64,15 +65,15 @@ namespace Service
             return candidateToReturn;
         }
 
-        public async Task<IEnumerable<CandidateDto>> GetCandidatesForPollAsync(Guid userId, Guid pollId, bool pollTrackChanges, bool candTrackChanges)
+        public async Task<(IEnumerable<CandidateDto> candidatesToReturn, MetaData metaData)> GetCandidatesForPollAsync(Guid userId, Guid pollId, CandidateParameters candidateParameters, bool pollTrackChanges, bool candTrackChanges)
         {
             await CheckIfPollExistsAsync(userId, pollId, pollTrackChanges);
 
-            var candidateEntity = await _repository.Candidate.GetCandidatesForPollAsync(pollId, candTrackChanges);
+            var candidatesWithMetaData = await _repository.Candidate.GetCandidatesForPollAsync(pollId, candidateParameters, candTrackChanges);
 
-            var candidateToReturn = _mapper.Map<IEnumerable<CandidateDto>>(candidateEntity);
+            var candidateToReturn = _mapper.Map<IEnumerable<CandidateDto>>(candidatesWithMetaData);
 
-            return candidateToReturn;
+            return (candidateToReturn, metaData: candidatesWithMetaData.MetaData);
         }
 
         public async Task DeleteCandidateForPollAsync(Guid userId, Guid pollId, Guid id, bool pollTrackChanges, bool candTrackChanges)

@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.RequestFeatures;
 
 namespace Repository
 {
@@ -24,12 +25,18 @@ namespace Repository
             var candidate = await FindByCondition(c => c.PollId.Equals(pollId) && c.Id.Equals(id), trackChanges)
                 .SingleOrDefaultAsync();
 
+#pragma warning disable CS8603 // Possible null reference return.
             return candidate;
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
-        public async Task<IEnumerable<Candidate>> GetCandidatesForPollAsync(Guid pollId, bool trackChanges)
-            => await FindByCondition(c => c.PollId.Equals(pollId), trackChanges)
+        public async Task<PagedList<Candidate>> GetCandidatesForPollAsync(Guid pollId, CandidateParameters candidateParameters, bool trackChanges)
+        {
+            var candidates = await FindByCondition(c => c.PollId.Equals(pollId), trackChanges)
             .ToListAsync();
+
+            return PagedList<Candidate>.ToPagedList(candidates, candidateParameters.PageNumber, candidateParameters.PageSize);
+        }
 
         public void DeleteCandidateForPoll(Candidate candidate)
             => Delete(candidate);

@@ -15,7 +15,7 @@ namespace Shared.DTOs
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             var errorMessage = $"The deadline set by the client is in the past.";
-            if (Deadline <= DateTime.Now)
+            if (Deadline <= DateTime.Now && !IsDisabled)
                 yield return new ValidationResult(errorMessage, new[] { nameof(Deadline) });
         }
     }

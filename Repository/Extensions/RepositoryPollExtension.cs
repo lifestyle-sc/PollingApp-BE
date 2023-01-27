@@ -6,10 +6,12 @@ namespace Repository.Extensions
     {
         public static IQueryable<Poll> Search(this IQueryable<Poll> polls, string searchTerm)
         {
-            if(String.IsNullOrEmpty(searchTerm))
-                return polls
+            if (String.IsNullOrEmpty(searchTerm))
+                return polls;
 
-            return polls.Where(x => x.Name.Contains(searchTerm));
+            var lowerCaseTerm = searchTerm.Trim().ToLower();
+
+            return polls.Where(x => x.Name.ToLower().Contains(searchTerm));
         }
     }
 }

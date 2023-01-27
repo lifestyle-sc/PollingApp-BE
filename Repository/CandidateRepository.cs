@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
 using Shared.RequestFeatures;
 
 namespace Repository
@@ -32,8 +33,12 @@ namespace Repository
 
         public async Task<PagedList<Candidate>> GetCandidatesForPollAsync(Guid pollId, CandidateParameters candidateParameters, bool trackChanges)
         {
+#pragma warning disable CS8604 // Possible null reference argument.
             var candidates = await FindByCondition(c => c.PollId.Equals(pollId), trackChanges)
+                .Search(candidateParameters.SearchTerm)
+                .OrderBy(c => c.Name)
             .ToListAsync();
+#pragma warning restore CS8604 // Possible null reference argument.
 
             return PagedList<Candidate>.ToPagedList(candidates, candidateParameters.PageNumber, candidateParameters.PageSize);
         }

@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
 using Shared.RequestFeatures;
 
 namespace Repository
@@ -22,9 +23,12 @@ namespace Repository
 
         public async Task<PagedList<Poll>> GetPollsForUserAsync(Guid userId, PollParameters pollParameters, bool trackChanges)
         {
+#pragma warning disable CS8604 // Possible null reference argument.
             var polls = await FindByCondition(p => p.UserId == userId.ToString(), trackChanges)
+                .Search(pollParameters.SearchTerm)
                 .OrderBy(p => p.Name)
                 .ToListAsync();
+#pragma warning restore CS8604 // Possible null reference argument.
 
             return PagedList<Poll>.ToPagedList(polls, pollParameters.PageNumber, pollParameters.PageSize);
         }
@@ -34,7 +38,9 @@ namespace Repository
             var poll = await FindByCondition(p => p.UserId == userId.ToString() && p.Id == id, trackChanges)
                 .SingleOrDefaultAsync();
 
+#pragma warning disable CS8603 // Possible null reference return.
             return poll;
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public async Task<IEnumerable<Poll>> GetPollsByIdsForUserAsync(Guid userId, IEnumerable<Guid> ids, bool trackChanges)

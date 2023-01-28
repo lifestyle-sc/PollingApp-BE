@@ -10,7 +10,7 @@ namespace Repository.Extensions
     {
         public static IQueryable<Candidate> Search(this IQueryable<Candidate> candidates, string searchTerm)
         {
-            if(string.IsNullOrEmpty(searchTerm))
+            if(string.IsNullOrWhiteSpace(searchTerm))
                 return candidates;
 
             var lowerTerm = searchTerm.Trim().ToLower();

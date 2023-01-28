@@ -26,7 +26,7 @@ namespace Repository
 #pragma warning disable CS8604 // Possible null reference argument.
             var polls = await FindByCondition(p => p.UserId == userId.ToString(), trackChanges)
                 .Search(pollParameters.SearchTerm)
-                .OrderBy(p => p.Name)
+                .Sort(pollParameters.OrderBy)
                 .ToListAsync();
 #pragma warning restore CS8604 // Possible null reference argument.
 

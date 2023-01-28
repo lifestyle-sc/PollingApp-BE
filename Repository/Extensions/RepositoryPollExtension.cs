@@ -8,7 +8,7 @@ namespace Repository.Extensions
     {
         public static IQueryable<Poll> Search(this IQueryable<Poll> polls, string searchTerm)
         {
-            if (String.IsNullOrWhiteSpace(searchTerm))
+            if (string.IsNullOrWhiteSpace(searchTerm))
                 return polls;
 
             var lowerCaseTerm = searchTerm.Trim().ToLower();

@@ -10,7 +10,7 @@ namespace PollingApp.Formatter
 
         }
 
-        public override void FormatCsv(StringBuilder buffer, CandidateDto entityDto)
+        protected override void FormatCsv(StringBuilder buffer, CandidateDto entityDto)
         {
             buffer.AppendLine($"{entityDto.Id}, \" {entityDto.Name}, \" {entityDto.Count}, \" {entityDto.CreatedAt}, \" {entityDto.UpdatedAt}");
 

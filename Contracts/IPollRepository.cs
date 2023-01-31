@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Shared.RequestFeatures;
 
 namespace Contracts
 {
@@ -6,7 +7,7 @@ namespace Contracts
     {
         void CreatePollForUser(Guid userId, Poll poll);
 
-        Task<IEnumerable<Poll>> GetPollsForUserAsync(Guid userId, bool trackChanges);
+        Task<PagedList<Poll>> GetPollsForUserAsync(Guid userId, PollParameters pollParameters, bool trackChanges);
 
         Task<Poll> GetPollForUserAsync(Guid userId, Guid id, bool trackChanges);
 

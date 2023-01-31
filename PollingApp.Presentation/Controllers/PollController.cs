@@ -4,6 +4,8 @@ using PollingApp.Presentation.ActionFilters;
 using PollingApp.Presentation.ModelBinders;
 using Service.Contracts;
 using Shared.DTOs;
+using Shared.RequestFeatures;
+using System.Text.Json;
 
 namespace PollingApp.Presentation.Controllers
 {
@@ -16,11 +18,13 @@ namespace PollingApp.Presentation.Controllers
         public PollController(IServiceManager services) => _services = services;
 
         [HttpGet]
-        public async Task<IActionResult> GetPollsForUser(Guid userId)
+        public async Task<IActionResult> GetPollsForUser(Guid userId, [FromQuery] PollParameters pollParameters)
         {
-            var polls = await _services.PollService.GetPollsForUserAsync(userId, trackChanges: false);
+            var result = await _services.PollService.GetPollsForUserAsync(userId, pollParameters, trackChanges: false);
 
-            return Ok(polls);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.metaData));
+
+            return Ok(result.pollsToReturn);
         }
 
         [HttpGet("{id:guid}", Name = "GetPollForUser")]

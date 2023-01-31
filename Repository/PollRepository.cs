@@ -1,6 +1,8 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
+using Shared.RequestFeatures;
 
 namespace Repository
 {
@@ -19,13 +21,16 @@ namespace Repository
             Create(poll);
         }
 
-        public async Task<IEnumerable<Poll>> GetPollsForUserAsync(Guid userId, bool trackChanges)
+        public async Task<PagedList<Poll>> GetPollsForUserAsync(Guid userId, PollParameters pollParameters, bool trackChanges)
         {
+#pragma warning disable CS8604 // Possible null reference argument.
             var polls = await FindByCondition(p => p.UserId == userId.ToString(), trackChanges)
-                .OrderBy(p => p.Name)
+                .Search(pollParameters.SearchTerm)
+                .Sort(pollParameters.OrderBy)
                 .ToListAsync();
+#pragma warning restore CS8604 // Possible null reference argument.
 
-            return polls;
+            return PagedList<Poll>.ToPagedList(polls, pollParameters.PageNumber, pollParameters.PageSize);
         }
 
         public async Task<Poll> GetPollForUserAsync(Guid userId, Guid id, bool trackChanges)
@@ -33,7 +38,9 @@ namespace Repository
             var poll = await FindByCondition(p => p.UserId == userId.ToString() && p.Id == id, trackChanges)
                 .SingleOrDefaultAsync();
 
+#pragma warning disable CS8603 // Possible null reference return.
             return poll;
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public async Task<IEnumerable<Poll>> GetPollsByIdsForUserAsync(Guid userId, IEnumerable<Guid> ids, bool trackChanges)

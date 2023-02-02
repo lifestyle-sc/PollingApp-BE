@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities.Models;
 using LoggerService;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PollingApp.Formatter;
@@ -46,6 +47,20 @@ namespace PollingApp.Extensions
                 config.OutputFormatters.Add(new PollCsvOutputFormatter());
                 config.OutputFormatters.Add(new CandidateCsvOutputFormatter());
             });
+        public static void ConfigureResponseCache(this IServiceCollection services) =>
+            services.AddResponseCaching();
+
+        public static void ConfigureHttpCacheHeaders(this IServiceCollection services) =>
+            services.AddHttpCacheHeaders(
+                (expirationOpt) =>
+                {
+                    expirationOpt.MaxAge = 70;
+                    expirationOpt.CacheLocation = CacheLocation.Private; 
+                },
+                (validationOpt) =>
+                {
+                    validationOpt.MustRevalidate = true;
+                });
 
         public static void ConfigureIdentity(this IServiceCollection services)
         {
@@ -61,5 +76,6 @@ namespace PollingApp.Extensions
             .AddEntityFrameworkStores<RepositoryContext>()
             .AddDefaultTokenProviders();
         }
+
     }
 }

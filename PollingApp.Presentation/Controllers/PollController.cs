@@ -18,6 +18,7 @@ namespace PollingApp.Presentation.Controllers
         public PollController(IServiceManager services) => _services = services;
 
         [HttpGet]
+        [HttpHead]
         public async Task<IActionResult> GetPollsForUser(Guid userId, [FromQuery] PollParameters pollParameters)
         {
             var result = await _services.PollService.GetPollsForUserAsync(userId, pollParameters, trackChanges: false);
@@ -95,6 +96,14 @@ namespace PollingApp.Presentation.Controllers
             await _services.PollService.SaveChangesForPatchAsync(result.pollForPatch, result.pollEntity);
 
             return NoContent();
+        }
+
+        [HttpOptions]
+        public IActionResult GetPollOptions()
+        {
+            Response.Headers.Add("Allow", "GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS");
+
+            return Ok();
         }
     }
 }

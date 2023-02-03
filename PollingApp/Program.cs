@@ -21,6 +21,8 @@ NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() =>
 
 builder.Services.ConfigureCors();
 builder.Services.ConfigureIISIntegration();
+builder.Services.ConfigureResponseCache();
+builder.Services.ConfigureHttpCacheHeaders();
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.ConfigureLoggerService();
 builder.Services.ConfigureRepositoryManager();
@@ -62,6 +64,10 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 });
 
 app.UseCors("CorsPolicy");
+
+app.UseResponseCaching();
+
+app.UseHttpCacheHeaders();
 
 app.UseAuthentication();
 

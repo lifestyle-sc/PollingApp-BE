@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using Contracts;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,9 @@ builder.Services.ConfigureCors();
 builder.Services.ConfigureIISIntegration();
 builder.Services.ConfigureResponseCache();
 builder.Services.ConfigureHttpCacheHeaders();
+builder.Services.AddMemoryCache();
+builder.Services.ConfigureRateLimitingOptions();
+builder.Services.AddHttpContextAccessor();
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.ConfigureLoggerService();
 builder.Services.ConfigureRepositoryManager();
@@ -62,6 +66,8 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.All
 });
+
+app.UseIpRateLimiting();
 
 app.UseCors("CorsPolicy");
 

@@ -1,4 +1,5 @@
-﻿using Contracts;
+﻿using AspNetCoreRateLimit;
+using Contracts;
 using Entities.Models;
 using LoggerService;
 using Marvin.Cache.Headers;
@@ -61,6 +62,24 @@ namespace PollingApp.Extensions
                 {
                     validationOpt.MustRevalidate = true;
                 });
+
+        public static void ConfigureRateLimitingOptions(this IServiceCollection services)
+        {
+            var rateLimitRules = new List<RateLimitRule>() {
+                new RateLimitRule
+                {
+                    Endpoint = "*",
+                    Limit = 3,
+                    Period = "5m"
+                }
+            };
+
+            services.Configure<IpRateLimitOptions>(opts => opts.GeneralRules = rateLimitRules);
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+            services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+        }
 
         public static void ConfigureIdentity(this IServiceCollection services)
         {

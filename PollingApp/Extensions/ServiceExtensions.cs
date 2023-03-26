@@ -135,6 +135,10 @@ namespace PollingApp.Extensions
             {
                 s.SwaggerDoc("v1", new OpenApiInfo { Title = "Polling App API", Version = "v1" });
 
+                var xmlFile = $"{typeof(Presentation.AssemblyReference).Assembly.GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                s.IncludeXmlComments(xmlPath);
+
                 s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,

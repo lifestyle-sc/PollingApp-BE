@@ -100,6 +100,9 @@ namespace PollingApp.Extensions
             .AddDefaultTokenProviders();
         }
 
+        public static void AddJwtConfiguration(this IServiceCollection services, IConfiguration configuration)
+            => services.Configure<JwtConfiguration>(configuration.GetSection("JwtSettings"));
+
         public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtConfiguration = new JwtConfiguration();

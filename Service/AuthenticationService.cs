@@ -157,7 +157,7 @@ namespace Service
                 ValidateIssuerSigningKey = true,
 
                 ValidIssuer = _jwtConfiguration.ValidIssuer,
-                ValidAudience = _jwtConfiguration.ValidIssuer,
+                ValidAudience = _jwtConfiguration.ValidAudience,
                 IssuerSigningKey = secret
             };
 

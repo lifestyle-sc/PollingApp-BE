@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Contracts;
+using Entities.ConfigurationModels;
 using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
@@ -22,6 +23,7 @@ namespace Service
         private readonly IConfiguration _configuration;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly JwtConfiguration _jwtConfiguration;
         private User? _user;
 
         public AuthenticationService(ILoggerManager logger, IMapper mapper, IConfiguration configuration, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
@@ -31,6 +33,8 @@ namespace Service
             _configuration = configuration;
             _userManager = userManager;
             _roleManager = roleManager;
+            _jwtConfiguration = new JwtConfiguration();
+            _configuration.Bind(_jwtConfiguration.Section, _jwtConfiguration);
         }
 
         public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForReg)
@@ -117,13 +121,11 @@ namespace Service
 
         private JwtSecurityToken GetTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
         {
-            var jwtSettings = _configuration.GetSection("JwtSettings");
-
             var tokenOptions = new JwtSecurityToken
             (
-                issuer : jwtSettings["validIssuer"],
-                audience: jwtSettings["validAudience"],
-                expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["expires"])),
+                issuer : _jwtConfiguration.ValidIssuer,
+                audience: _jwtConfiguration.ValidAudience,
+                expires: DateTime.Now.AddMinutes(Convert.ToDouble(_jwtConfiguration.Expires)),
                 claims: claims,
                 signingCredentials: signingCredentials
             );
@@ -144,7 +146,6 @@ namespace Service
 
         private ClaimsPrincipal GetClaimsPrincipalFromToken(string token)
         {
-            var jwtSettings = _configuration.GetSection("JwtSettings");
             var key = Environment.GetEnvironmentVariable("POLLING_SECRET");
             var secret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
 
@@ -155,8 +156,8 @@ namespace Service
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
 
-                ValidIssuer = jwtSettings["validIssuer"],
-                ValidAudience = jwtSettings["validAudience"],
+                ValidIssuer = _jwtConfiguration.ValidIssuer,
+                ValidAudience = _jwtConfiguration.ValidIssuer,
                 IssuerSigningKey = secret
             };
 

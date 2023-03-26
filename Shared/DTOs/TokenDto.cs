@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Shared.DTOs
 {
-    public record TokenDto(string? AccessToken, string? RefreshToken);
+    public record TokenDto(string AccessToken, string RefreshToken);
 }

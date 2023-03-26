@@ -38,9 +38,9 @@ namespace PollingApp.Presentation.Controllers
             if(!await _services.AuthenticationService.ValidateUser(userForAuth))
                 return Unauthorized();
 
-            var token = await _services.AuthenticationService.CreateToken(populateExp: true);
+            var tokenDto = await _services.AuthenticationService.CreateToken(populateExp: true);
 
-            return Ok(token);
+            return Ok(tokenDto);
         }
     }
 }

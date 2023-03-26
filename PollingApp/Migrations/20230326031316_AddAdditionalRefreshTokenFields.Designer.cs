@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -11,9 +12,11 @@ using Repository;
 namespace PollingApp.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20230326031316_AddAdditionalRefreshTokenFields")]
+    partial class AddAdditionalRefreshTokenFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -191,14 +194,14 @@ namespace PollingApp.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "65b787d6-29d6-4bf3-80a6-1116ebf46d5e",
+                            Id = "b25b2a2f-b679-4508-8021-cee30f98541e",
                             ConcurrencyStamp = "eaa4fefe-fb1a-4700-b977-d9d72f21b235",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "b6a5647a-61bd-4fed-88a7-750794a91a6b",
+                            Id = "1e280d7f-af2f-4003-9126-12e05f6227a4",
                             ConcurrencyStamp = "f0bd38a5-82fa-46da-8043-79dff78f7db5",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"

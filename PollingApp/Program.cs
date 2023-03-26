@@ -58,17 +58,17 @@ var logger = app.Services.GetRequiredService<ILoggerManager>();
 
 // Configure the HTTP request pipeline.
 
+app.ConfigureExceptionHandler(logger);
+
+if (app.Environment.IsProduction())
+    app.UseHsts();
+
 app.UseSwagger();
 
 app.UseSwaggerUI(s =>
 {
     s.SwaggerEndpoint("/swagger/v1/swagger.json", "Polling App API v1");
 });
-
-app.ConfigureExceptionHandler(logger);
-
-if (app.Environment.IsProduction())
-    app.UseHsts();
 
 app.UseHttpsRedirection();
 

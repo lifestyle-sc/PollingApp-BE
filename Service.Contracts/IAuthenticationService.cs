@@ -10,5 +10,6 @@ namespace Service.Contracts
         Task<bool> ValidateUser(UserForAuthDto userForAuth);
 
         Task<TokenDto> CreateToken(bool populateExp);
+        Task<TokenDto> RefreshToken(TokenDto tokenCreds);
     }
 }

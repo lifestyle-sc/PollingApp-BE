@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Contracts;
+using Entities.ConfigurationModels;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Service.Contracts;
 
 namespace Service
@@ -14,7 +16,7 @@ namespace Service
         private readonly Lazy<IAuthenticationService> _authenticationService;
         private readonly Lazy<IUserService> _userService;
 
-        public ServiceManager(IRepositoryManager repository, ILoggerManager logger, IMapper mapper, IConfiguration configuration, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public ServiceManager(IRepositoryManager repository, ILoggerManager logger, IMapper mapper, IOptions<JwtConfiguration> configuration, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             _pollService = new Lazy<IPollService>(() => new PollService(repository, logger, mapper, userManager));
             _candidateService = new Lazy<ICandidateService>(() => new CandidateService(repository, logger, mapper));

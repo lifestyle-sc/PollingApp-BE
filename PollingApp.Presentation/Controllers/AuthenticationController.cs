@@ -30,5 +30,17 @@ namespace PollingApp.Presentation.Controllers
 
             return StatusCode(201);
         }
+
+        [HttpPost("login")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> Authenticate([FromBody] UserForAuthDto userForAuth)
+        {
+            if(!await _services.AuthenticationService.ValidateUser(userForAuth))
+                return Unauthorized();
+
+            var tokenDto = await _services.AuthenticationService.CreateToken(populateExp: true);
+
+            return Ok(tokenDto);
+        }
     }
 }

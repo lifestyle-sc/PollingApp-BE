@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using PollingApp.Presentation.ActionFilters;
 using PollingApp.Presentation.ModelBinders;
@@ -19,6 +20,7 @@ namespace PollingApp.Presentation.Controllers
 
         [HttpGet]
         [HttpHead]
+        [Authorize]
         public async Task<IActionResult> GetPollsForUser(Guid userId, [FromQuery] PollParameters pollParameters)
         {
             var result = await _services.PollService.GetPollsForUserAsync(userId, pollParameters, trackChanges: false);

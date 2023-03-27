@@ -1,11 +1,19 @@
 ﻿using AutoMapper;
 using Contracts;
+using Entities.ConfigurationModels;
+using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Service.Contracts;
 using Shared.DTOs;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Service
 {
@@ -13,17 +21,20 @@ namespace Service
     {
         private readonly IMapper _mapper;
         private readonly ILoggerManager _logger;
-        private readonly IConfiguration _configuration;
+        private readonly IOptions<JwtConfiguration> _configuration;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly JwtConfiguration _jwtConfiguration;
+        private User? _user;
 
-        public AuthenticationService(ILoggerManager logger, IMapper mapper, IConfiguration configuration, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public AuthenticationService(ILoggerManager logger, IMapper mapper, IOptions<JwtConfiguration> configuration, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             _mapper = mapper;
             _logger = logger;
             _configuration = configuration;
             _userManager = userManager;
             _roleManager = roleManager;
+            _jwtConfiguration = _configuration.Value;
         }
 
         public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForReg)
@@ -36,6 +47,130 @@ namespace Service
                 await _userManager.AddToRolesAsync(user, userForReg.Roles);
 
             return result;
+        }
+
+        public async Task<bool> ValidateUser(UserForAuthDto userForAuth)
+        {
+            _user = await _userManager.FindByNameAsync(userForAuth.UserName);
+
+            var result = (_user != null && await _userManager.CheckPasswordAsync(_user, userForAuth.Password));
+
+            if (!result)
+                _logger.LogWarn($"{nameof(ValidateUser)}: Authentication failed. Wrong user name or password.");
+
+            return result;
+        }
+
+        public async Task<TokenDto> CreateToken(bool populateExp)
+        {
+            var signingCredentials = GetSigningCredentials();
+            var claims = await GetClaims();
+            var tokenOptions = GetTokenOptions(signingCredentials, claims);
+
+
+            var refreshToken = GenerateRefreshToken();
+
+            _user.RefreshToken = refreshToken;
+
+            if (populateExp)
+                _user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+
+            await _userManager.UpdateAsync(_user);
+
+            var accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+            return new TokenDto(accessToken, refreshToken);
+        }
+
+        public async Task<TokenDto> RefreshToken(TokenDto tokenCreds)
+        {
+            var principal = GetClaimsPrincipalFromToken(tokenCreds.AccessToken);
+
+            var user = await _userManager.FindByNameAsync(principal.Identity.Name);
+
+            if (user == null || user.RefreshToken != tokenCreds.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+                throw new RefreshTokenBadRequestException();
+
+            _user = user;
+
+            return await CreateToken(populateExp: false);
+        }
+
+        private SigningCredentials GetSigningCredentials()
+        {
+            var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("POLLING_SECRET"));
+            var secret = new SymmetricSecurityKey(key);
+
+            return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
+        }
+
+        private async Task<List<Claim>> GetClaims()
+        {
+            var claims = new List<Claim> {
+                new Claim(ClaimTypes.Name, _user.UserName)
+            };
+
+            var roles = await _userManager.GetRolesAsync(_user);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            return claims;
+        }
+
+        private JwtSecurityToken GetTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
+        {
+            var tokenOptions = new JwtSecurityToken
+            (
+                issuer : _jwtConfiguration.ValidIssuer,
+                audience: _jwtConfiguration.ValidAudience,
+                expires: DateTime.Now.AddMinutes(Convert.ToDouble(_jwtConfiguration.Expires)),
+                claims: claims,
+                signingCredentials: signingCredentials
+            );
+
+            return tokenOptions;
+        }
+
+        private string GenerateRefreshToken()
+        {
+            var randomNumber = new Byte[32];
+
+            using(var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
+        }
+
+        private ClaimsPrincipal GetClaimsPrincipalFromToken(string token)
+        {
+            var key = Environment.GetEnvironmentVariable("POLLING_SECRET");
+            var secret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+
+            var tokenValidationParamters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+
+                ValidIssuer = _jwtConfiguration.ValidIssuer,
+                ValidAudience = _jwtConfiguration.ValidAudience,
+                IssuerSigningKey = secret
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken securityToken;
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParamters, out securityToken);
+
+            var jwtSecurityToken = securityToken as JwtSecurityToken;
+
+            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                throw new SecurityTokenException("Invalid Token");
+
+            return principal;
         }
     }
 }

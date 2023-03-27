@@ -48,6 +48,9 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
+builder.Services.ConfigureJWT(builder.Configuration);
+builder.Services.AddJwtConfiguration(builder.Configuration);
+builder.Services.ConfigureSwagger();
 
 var app = builder.Build();
 
@@ -59,6 +62,13 @@ app.ConfigureExceptionHandler(logger);
 
 if (app.Environment.IsProduction())
     app.UseHsts();
+
+app.UseSwagger();
+
+app.UseSwaggerUI(s =>
+{
+    s.SwaggerEndpoint("/swagger/v1/swagger.json", "Polling App API v1");
+});
 
 app.UseHttpsRedirection();
 
